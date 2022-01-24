@@ -24,6 +24,7 @@ mypy = "^0.910"
 pytest-cov = "^3.0.0"
 poetry = "^1.1.11"
 pre-commit = "^2.15.0"
+ptpython = "^3.0.20"
 
 [tool.pylint.messages_control]
 max-line-length = 88
@@ -78,5 +79,3 @@ strict_equality = true
 profile = "black"
 multi_line_output = 3
 use_parentheses = true
-
-
