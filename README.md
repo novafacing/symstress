@@ -37,6 +37,24 @@ python3 -c 'import binaryninja'
 
 ## Usage
 
+```
+❯ python3 -m symstress --help
+usage: symstress [-h] [--binary BINARY] [--backend {binaryninja}] [--match MATCH] [--options OPTIONS] [--prefix PREFIX] [--include-confidence] source
+
+positional arguments:
+  source                The source directory to acquire symbols for.
+
+optional arguments:
+  -h, --help            show this help message and exit
+  --binary BINARY       The binary to add symbols to.
+  --backend {binaryninja}
+                        The backend to add symbols in.
+  --match MATCH         The minimum similarity of a symbol to add to the binary.
+  --options OPTIONS     Options to pass to BinaryViewType.get_view_of_file_with_options().
+  --prefix PREFIX       The prefix to add to the symbol name.
+  --include-confidence  Include the confidence of a match in the output.
+```
+
 Something like:
 
 ```
