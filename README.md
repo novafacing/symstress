@@ -19,7 +19,7 @@ tree sitter parsing library's Python bindings.
 
 The tool will create a BNDB that when opened looks something like this:
 
-![docs/demo.png](An example screenshot.)
+![An example screenshot.](docs/demo.png)
 
 ## Installation
 
