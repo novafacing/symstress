@@ -36,6 +36,20 @@ if __name__ == "__main__":
         default="{}",
         help="Options to pass to BinaryViewType.get_view_of_file_with_options().",
     )
+    parser.add_argument(
+        "--prefix",
+        type=str,
+        required=False,
+        default="",
+        help="The prefix to add to the symbol name.",
+    )
+    parser.add_argument(
+        "--include-confidence",
+        action="store_true",
+        required=False,
+        default=False,
+        help="Include the confidence of a match in the output.",
+    )
 
     args = parser.parse_args()
     main(args)

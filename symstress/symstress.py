@@ -21,6 +21,8 @@ def main(args) -> None:
             from symstress.binaryninja.symbols import BinjaSymbols
 
             bsymbols = BinjaSymbols(args.binary, cparser.mapping, loads(args.options))
-            bsymbols.add_symbols()
+            bsymbols.add_symbols(
+                prefix=args.prefix, include_confidence=args.include_confidence
+            )
     else:
         print(cparser.serialized_map())

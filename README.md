@@ -15,6 +15,12 @@ Instead of some similar tools which attempt to do this using a second binary tha
 compiled with symbols to populate symbols in the target binary, this is done using the
 tree sitter parsing library's Python bindings.
 
+## Example
+
+The tool will create a BNDB that when opened looks something like this:
+
+![docs/demo.png](An example screenshot.)
+
 ## Installation
 
 ```sh
@@ -32,3 +38,14 @@ python3 -c 'import binaryninja'
 ## Usage
 
 Something like:
+
+```
+python3 -m symstress --binary test/binaries/coreutils --backend binaryninja ~/Downloads/coreutils-master/src
+``` 
+will create a `.bndb` file with pre-populated guesses as to what functions are named what!
+
+The optional `--prefix` option is very useful for differentiating what symbols were populated by symstress. For example, we can do:
+
+```
+python3 -m symstress --binary test/binaries/coreutils --backend binaryninja --prefix 'guess_' ~/Downloads/coreutils-master/src
+```

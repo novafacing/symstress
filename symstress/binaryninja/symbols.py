@@ -32,11 +32,14 @@ class BinjaSymbols:
         )
         self.bv.update_analysis_and_wait()
 
-    def add_symbols(self, match: float = 0.85) -> None:
+    def add_symbols(
+        self, match: float = 0.85, prefix: str = "", include_confidence: bool = False
+    ) -> None:
         """
         Add symbols to a binary with binaryninja.
 
         :param match: The minimum similarity of a symbol to add to the binary.
+        :param prefix: The prefix to add to the symbol name.
         """
         bin_strings = self.bv.get_strings()
 
@@ -51,8 +54,18 @@ class BinjaSymbols:
         matched = StringMatcher.match(self.symbols, function_string_refs)
 
         for likely_name in sorted(matched.items(), key=lambda i: i[1][1], reverse=True):
+            confidence = f"_{int(likely_name[1][1]*100)}%" if include_confidence else ""
+
+            print(
+                f"Definining {prefix + likely_name[1][0] + confidence}@{likely_name[0]}"
+            )
+
             self.bv.define_user_symbol(
-                Symbol("FunctionSymbol", likely_name[0], likely_name[1][0])
+                Symbol(
+                    "FunctionSymbol",
+                    likely_name[0],
+                    prefix + likely_name[1][0] + confidence,
+                )
             )
 
         self.bv.update_analysis_and_wait()
