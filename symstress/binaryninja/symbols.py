@@ -6,9 +6,12 @@ from collections import defaultdict
 from json import loads
 from operator import itemgetter
 from pathlib import Path
-from typing import Any, Dict
+from typing import Any, Dict, List
 
-from binaryninja import BinaryViewType
+from binaryninja import BinaryViewType, Symbol
+from binaryninja.filemetadata import SaveSettings
+
+from symstress.matcher.matcher import StringMatcher
 
 
 class BinjaSymbols:
@@ -16,18 +19,20 @@ class BinjaSymbols:
     Add symbols to a binary with binaryninja.
     """
 
-    def __init__(self, binary: Path, symbols: str, options: Dict[str, Any]) -> None:
+    def __init__(
+        self, binary: Path, symbols: Dict[str, List[str]], options: Dict[str, Any]
+    ) -> None:
         """
         Add symbols to a binary with binaryninja.
         """
         self.binary = binary
-        self.symbols = loads(symbols)
+        self.symbols = symbols
         self.bv = BinaryViewType.get_view_of_file_with_options(
             str(self.binary.resolve()), options
         )
         self.bv.update_analysis_and_wait()
 
-    def add_symbols(self, match: float) -> None:
+    def add_symbols(self, match: float = 0.85) -> None:
         """
         Add symbols to a binary with binaryninja.
 
@@ -38,30 +43,19 @@ class BinjaSymbols:
         function_string_refs = defaultdict(set)
         for bstr in bin_strings:
             for ref in self.bv.get_code_refs(bstr.start):
-                print(ref, bstr)
-                function_string_refs[ref.function.start].add(bstr.raw)
+                st = bstr.raw
+                if isinstance(st, str):
+                    st = st.encode("utf-8")
+                function_string_refs[ref.function.start].add(st)
 
-        metrics = defaultdict(set)
-        for fname, strs in self.symbols.items():
-            for addr, bstrs in function_string_refs.items():
-                strs_ = set(map(lambda s: s.encode("utf-8"), strs))
-                overlap = set()
-                for s in strs_:
-                    for b in bstrs:
-                        if s in b or b in s:
-                            overlap.add((s, b))
-                if len(overlap) > 0:
-                    metrics[addr].add(
-                        (float(len(overlap)) / len(bstrs), fname, tuple(overlap))
-                    )
+        matched = StringMatcher.match(self.symbols, function_string_refs)
 
-        likely = {}
-        for addr, overlaps in metrics.items():
-            print(addr, overlaps)
-            try:
-                top = next(iter(sorted(overlaps, key=itemgetter(0))))
-                likely[addr] = top[1]
-            except StopIteration:
-                continue
+        for likely_name in sorted(matched.items(), key=lambda i: i[1][1], reverse=True):
+            self.bv.define_user_symbol(
+                Symbol("FunctionSymbol", likely_name[0], likely_name[1][0])
+            )
 
-        print(likely)
+        self.bv.update_analysis_and_wait()
+        self.bv.create_database(
+            str(self.binary.resolve()) + ".bndb", None, SaveSettings()
+        )

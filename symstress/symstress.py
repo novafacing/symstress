@@ -20,9 +20,7 @@ def main(args) -> None:
         if args.backend == "binaryninja":
             from symstress.binaryninja.symbols import BinjaSymbols
 
-            bsymbols = BinjaSymbols(
-                args.binary, cparser.serialized_map(), loads(args.options)
-            )
-            bsymbols.add_symbols(args.match)
+            bsymbols = BinjaSymbols(args.binary, cparser.mapping, loads(args.options))
+            bsymbols.add_symbols()
     else:
         print(cparser.serialized_map())

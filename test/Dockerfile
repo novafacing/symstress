@@ -23,4 +23,7 @@ RUN git clone https://github.com/coreutils/coreutils.git coreutils
 WORKDIR /coreutils
 
 RUN ./bootstrap
-RUn ./configure --help
+RUN mkdir /build
+ENV CFLAGS=-s
+ENV FORCE_UNSAFE_CONFIGURE=1
+RUN ./configure --prefix=/build --enable-single-binary=symlinks && make && make install

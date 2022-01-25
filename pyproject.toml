@@ -6,10 +6,11 @@ authors = ["novafacing <novafacing@chaos>"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = "3.9.5"
+python = "^3.8"
 angr = "^9.1.11508"
 cle = "^9.1.11508"
 tree-sitter = "^0.20.0"
+python-Levenshtein = "^0.12.2"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

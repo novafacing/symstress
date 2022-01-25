@@ -21,7 +21,8 @@ tree sitter parsing library's Python bindings.
 
 git clone https://github.com/novafacing/symstress.git
 cd symstress
-git submodule init --recursive
+git submodule init
+git submodule update
 poetry install
 poetry shell
 python3 /path/to/binaryninja/scripts/install_api.py -v

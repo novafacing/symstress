@@ -174,6 +174,8 @@ class CParse:
                 elif enc.type == "assignment_expression":
                     # See if we can get an identifier this is part of
                     for fn, strs in self.map_identifier_access(enc, string).items():
+                        if fn is None:
+                            continue
                         mapping[fn] |= strs
                 else:
                     pass
@@ -187,7 +189,14 @@ class CParse:
         :param mapping: The mapping to update with.
         """
         for fn, strs in self.map_symbols().items():
-            self.mapping[fn] |= strs
+            self.mapping[fn] |= set(
+                map(
+                    lambda s: s.encode("utf-8")
+                    .decode("unicode_escape")
+                    .encode("utf-8"),
+                    strs,
+                )
+            )
 
     def serialized_map(self) -> str:
         """
