@@ -67,3 +67,12 @@ The optional `--prefix` option is very useful for differentiating what symbols w
 ```
 python3 -m symstress --binary test/binaries/coreutils --backend binaryninja --prefix 'guess_' ~/Downloads/coreutils-master/src
 ```
+
+To open something with a specific architecture (using Binary Ninja), we can pass options directly to `get_view_of_file_with_options`. It's not really super
+nice syntax, but you can for example force `arm` architecture with:
+
+```
+--options "{'files.universal.architecturePreference': ['arm64']}"
+```
+
+That dictionary will be `loads`-ed and passed in.
